@@ -1,5 +1,67 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
+#include <stdbool.h>
+
+// first element of the array is its size
+// one in two elements is the number of times the prime comes back
+// O(sqrt(n)) according to the site I got the function from
+// there probably exists better algorithms out there
+int* prime_factors(int n) {
+  int* results = malloc(sizeof(int)*sqrt(n)*2+1); // probably more memory than necessary
+  int j = 0; // number of time the current prime comes back
+  int* current_result; // keep track of the current prime position
+  current_result = results + 1;
+
+  while (n%2==0){ // allow to get rid of every odd number in the next loop
+    j++;
+    n/=2;       }
+  if (j>0) {
+    *current_result = 2;
+    current_result++;
+    *current_result = j;
+    current_result++;
+    j=0;
+  }
+  // main loop of the function
+  for (int i=3; i<=sqrt(n); i+=2) {
+    while (n%i==0){ 
+      j++;
+      n/=i;       }
+    if (j>0) {
+      *current_result = i;
+      current_result++;
+      *current_result = j;
+      current_result++;
+      j=0;
+    }
+  }
+  // case were n itself is now a prime number greater than two
+  if (n>2) {
+    *current_result = n;
+    current_result++;
+    *current_result = 1;
+    current_result++;
+  }
+
+  *results = (current_result - results); // the first element is the size of the array, with this element
+  return (results); // do not forget to free that once it's been used
+}
+
+void test_prime_factors() {
+  while (true) {
+    int to_test_number = 2;
+    printf("Number to test: ");
+    scanf("%d", &to_test_number);
+
+    int* results = prime_factors(to_test_number);
+    for (int i = 0; i < *results; i++) {
+      printf("%d", results[i]);
+    }
+    printf("\n");
+    free(results);
+  }
+}
 
 int sum_last_poss(int *array) {
   return (1);
@@ -47,6 +109,8 @@ mul: %d add: %d total: %d\n", i, *current_multiplication, *current_addition, sum
 
 int main(int argc, char *argv[])
 { 
+  test_prime_factors();
+
   int target_number = 0;
   printf("Nombre pour lequel l'on cherche le nombre de possibilité dans l'écriture: ");
   scanf("%d", &target_number);
