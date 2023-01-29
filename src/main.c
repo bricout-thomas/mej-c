@@ -63,18 +63,36 @@ void test_prime_factors() {
   }
 }
 
-int sum_last_poss(int *array) {
-  return (1);
+// this function helps tell you how many ways you can combine n methods k times of giving you a number without counting twice due to commutativity
+// for example ways to write 25 using 5 two times, with two methods for writing five (sum last) is 3 because a*b and b*a is considered the same thing
+// see https://stackoverflow.com/questions/11032781/fastest-way-to-generate-binomial-coefficients, I have no idea how the filling the table works
+int* gen_binomial_coeff (int target_number, int n_max) {
+  int (*table)[target_number] = malloc(target_number * n_max * sizeof(int));
+  // we know that k will always be smaller or equal to target_number
+  // however, n is the number of methods, since it's what were looking for, the array will be reallocated for n
+  // I decided we'll have table[n][k], for easy realloc(), for now it will just fill up to n, whatever you decide it to be
+  // see https://stackoverflow.com/questions/23720005/allocate-a-matrix-in-c-using-malloc
+
+  for (int k = 1; k <= target_number; k++)  table[0][k] = 0;
+  for (int n = 0; n <= n_max; n++)              table[n][0] = 1;
+
+  for (int n = 1; n <= n_max; n++)
+     for (int k = 1; k <= target_number; k++)
+        table[n][k] = table[n-1][k-1] + table[n-1][k];
 }
 
-int mul_last_poss(int *array) {
-  return (1);
+int sum_last_poss(int *array, int target) {
+  return (1); // todo
+}
+
+int mul_last_poss(int *array, int target) {
+  return (1); // todo
 }
 
 int get_result(int target_number) {
 
-  int *addition = (int*) malloc(target_number * sizeof(int));
-  int *multiplication = (int*) malloc(target_number * sizeof(int));
+  int *addition = malloc(target_number * sizeof(int));
+  int *multiplication = malloc(target_number * sizeof(int));
   // both pointers target the first element of the array, they shouldn't be modified
   // each array contains the number of possibilities to write the index+1 number
   // with the last operation being an addition or a multiplication
@@ -94,8 +112,8 @@ int get_result(int target_number) {
     current_addition ++; // the way c works takes care of multiplying 1 by sizeof(int)
     current_multiplication ++;
     
-    *current_addition = sum_last_poss(multiplication);
-    *current_multiplication = mul_last_poss(addition);
+    *current_addition = sum_last_poss(multiplication, i);
+    *current_multiplication = mul_last_poss(addition, i);
     
     int sum = *current_multiplication + *current_addition;
 
@@ -109,8 +127,6 @@ mul: %d add: %d total: %d\n", i, *current_multiplication, *current_addition, sum
 
 int main(int argc, char *argv[])
 { 
-  test_prime_factors();
-
   int target_number = 0;
   printf("Nombre pour lequel l'on cherche le nombre de possibilité dans l'écriture: ");
   scanf("%d", &target_number);
