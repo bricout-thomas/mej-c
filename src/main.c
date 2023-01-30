@@ -63,22 +63,30 @@ void test_prime_factors() {
   }
 }
 
-// this function helps tell you how many ways you can combine n methods k times of giving you a number without counting twice due to commutativity
-// for example ways to write 25 using 5 two times, with two methods for writing five (sum last) is 3 because a*b and b*a is considered the same thing
-// see https://stackoverflow.com/questions/11032781/fastest-way-to-generate-binomial-coefficients, I have no idea how the filling the table works
-int* gen_binomial_coeff (int target_number, int n_max) {
-  int (*table)[target_number] = malloc(target_number * n_max * sizeof(int));
-  // we know that k will always be smaller or equal to target_number
-  // however, n is the number of methods, since it's what were looking for, the array will be reallocated for n
-  // I decided we'll have table[n][k], for easy realloc(), for now it will just fill up to n, whatever you decide it to be
-  // see https://stackoverflow.com/questions/23720005/allocate-a-matrix-in-c-using-malloc
+// number of ways there is to write a number using a and a chosen operation
+// with n methods for writing a itself and the number of times a is required
+// It should become a linked list or a vector of vectors (matrix) or a reallocatable vector of arrays
+int* gen_fibonacci_tree(int max_n, int max_i) {
+  return void*; // todo
+}
 
-  for (int k = 1; k <= target_number; k++)  table[0][k] = 0;
-  for (int n = 0; n <= n_max; n++)              table[n][0] = 1;
+int get_fibonacci_tree_value(int* fibonacci_tree, int n, int i) {
+  return (1) // todo
+}
 
-  for (int n = 1; n <= n_max; n++)
-     for (int k = 1; k <= target_number; k++)
-        table[n][k] = table[n-1][k-1] + table[n-1][k];
+int test_fibonacci_tree(int* fibonacci_tree) {
+  while (true) {
+    int n = 2;
+    printf("Number of methods: ");
+    scanf("%d", &n);
+
+    int i = 2;
+    printf("Number of repetitions: ");
+    scanf("%d", &i);
+
+    int result = get_fibonacci_tree_value(fibonacci_tree, n, i);
+    printf("Result: %d\n", result);
+  }
 }
 
 int sum_last_poss(int *array, int target) {
@@ -94,7 +102,7 @@ int get_result(int target_number) {
   int *addition = malloc(target_number * sizeof(int));
   int *multiplication = malloc(target_number * sizeof(int));
   // both pointers target the first element of the array, they shouldn't be modified
-  // each array contains the number of possibilities to write the index+1 number
+  // each array cells contains the number of possibilities to write the index+1
   // with the last operation being an addition or a multiplication
   
   int *current_addition;
@@ -104,7 +112,7 @@ int get_result(int target_number) {
   current_multiplication = multiplication;
   
   // we manually insert the possibilities for 1
-  *current_addition = 1;
+  *current_addition = 0; // 1 multiplied by something gives one so in order to keep the pattern poss = add + mul this is set to zero
   *current_multiplication = 1;
 
   // each iterations, we compute the number of possibilities for i
