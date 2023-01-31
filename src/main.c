@@ -67,14 +67,31 @@ void test_prime_factors() {
 // with n methods for writing a itself and the number of times a is required
 // It should become a linked list or a vector of vectors (matrix) or a reallocatable vector of arrays
 int* gen_fibonacci_tree(int max_n, int max_i) {
-  return void*; // todo
+  int* contents = malloc(sizeof(int)*max_n*max_i);
+  // fill the n = 0 parts
+  for (int i=0; i<max_i; i++) {
+    contents[i*max_i] = 0;
+  }
+  // fill the i = 0 parts
+  for (int n=0; n<max_i; n++) {
+    contents[n] = 1;
+  }
+  // fill everything else according to the m(n, i) = m(n-1, i) + m(n, i-1) rule
+  for (int i=1; i<max_i; i++) {
+    for (int n=1; n<max_n; n++) {
+      contents[i*max_i+n] = contents[i*max_i+(n-1)] + contents[(i-1)*max_i+n];
+    }
+  }
+  // return a ptr to the filled fibonacci_tree
+  return (contents);
 }
 
-int get_fibonacci_tree_value(int* fibonacci_tree, int n, int i) {
-  return (1) // todo
+int get_fibonacci_tree_value(int* fibonacci_tree, int n, int i, int max_i) {
+  return fibonacci_tree[i*max_i+n];
+  // todo: make it reallocate and fill the necessary parts
 }
 
-int test_fibonacci_tree(int* fibonacci_tree) {
+int test_fibonacci_tree(int* fibonacci_tree, int max_i) {
   while (true) {
     int n = 2;
     printf("Number of methods: ");
@@ -84,7 +101,7 @@ int test_fibonacci_tree(int* fibonacci_tree) {
     printf("Number of repetitions: ");
     scanf("%d", &i);
 
-    int result = get_fibonacci_tree_value(fibonacci_tree, n, i);
+    int result = get_fibonacci_tree_value(fibonacci_tree, n, i, max_i);
     printf("Result: %d\n", result);
   }
 }
@@ -98,6 +115,12 @@ int mul_last_poss(int *array, int target) {
 }
 
 int get_result(int target_number) {
+
+  int max_i = target_number;
+  int precalculation_n = 500;
+
+  int *fibonacci_tree = gen_fibonacci_tree(precalculation_n, max_i);
+  test_fibonacci_tree(fibonacci_tree, max_i);
 
   int *addition = malloc(target_number * sizeof(int));
   int *multiplication = malloc(target_number * sizeof(int));
